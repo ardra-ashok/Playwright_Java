@@ -1,13 +1,15 @@
 package org.Basics;
 
 import com.microsoft.playwright.*;
+import com.microsoft.playwright.options.SelectOption;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.testng.AssertJUnit.assertEquals;
 
-public class DropDowns {
+public class InternetHeroku {
+
     private static Playwright playwright;
     private static Browser browser;
     private static BrowserContext browserContext;
@@ -19,22 +21,21 @@ public class DropDowns {
         browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
 //        browserContext = browser.newContext(new Browser.NewContextOptions().setViewportSize(1512,982));
         page = browser.newPage();
-
-
     }
-    @Test
-    public void dropDownExample() {
-        page.navigate("https://www.wikipedia.org/");
-        page.selectOption("select","en");
-//        page.selectOption("select", new SelectOption().setIndex(1));
-        String selectedOption = page.evalOnSelector("select","el=>el.options[el.selectedIndex].text").toString();
-        assertEquals(selectedOption,"English");
-//        page.selectOption("select", new SelectOption().setLabel("Eesti"));
-        System.out.println(page.locator("select > option").count());
-        Locator selectOptions = page.locator("select > option");
 
-        for (int i = 0; i < selectOptions.count(); i++)
-            System.out.println(selectOptions.nth(i).innerText()+"----"+selectOptions.nth(i).getAttribute("lang"));
+    @Test
+    public void herokuElements(){
+        page.navigate("https://the-internet.herokuapp.com/");
+        assertEquals("The Internet",page.title());
+        System.out.println(page.locator("a").count());
+        Locator content = page.locator("id=content");
+        Locator contentLinks =  content.locator("a");
+        for(int i=0;i<contentLinks.count();i++)
+            System.out.println(contentLinks.nth(i).innerText()+"-----"+contentLinks.nth(i).getAttribute("href"));
+        page.click("text=Dropdown");
+        page.selectOption("select",new SelectOption().setLabel("Option 1"));
+        String selectedText = page.evalOnSelector("select","el=>el.options[el.selectedIndex].text").toString();
+        assertEquals("Option 1",selectedText);
     }
 
     @AfterMethod
