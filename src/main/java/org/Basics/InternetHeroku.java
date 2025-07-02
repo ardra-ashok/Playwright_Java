@@ -6,7 +6,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.*;
 
 public class InternetHeroku {
 
@@ -26,13 +26,16 @@ public class InternetHeroku {
     @Test
     public void herokuElements(){
         page.navigate("https://the-internet.herokuapp.com/");
+
         assertEquals("The Internet",page.title());
         System.out.println(page.locator("a").count());
         Locator content = page.locator("id=content");
         Locator contentLinks =  content.locator("a");
         for(int i=0;i<contentLinks.count();i++)
             System.out.println(contentLinks.nth(i).innerText()+"-----"+contentLinks.nth(i).getAttribute("href"));
+
         page.click("text=Dropdown");
+        assertTrue(page.url().contains("dropdown"));
         page.selectOption("select",new SelectOption().setLabel("Option 1"));
         String selectedText = page.evalOnSelector("select","el=>el.options[el.selectedIndex].text").toString();
         assertEquals("Option 1",selectedText);
